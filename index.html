@@ -132,7 +132,6 @@
             document.getElementById('question-text').innerText = data.category;
             document.getElementById('instruction-text').innerText = data.type === "spectrum" ? "How does it feel to live here?" : (data.type === "single" ? "How did the island start?" : "Choose your mix (Total 100%).");
             const container = document.getElementById('options-container'); container.innerHTML = '';
-            
             document.getElementById('logic-feedback').style.display = 'none';
 
             if (data.type === "single") {
@@ -176,13 +175,11 @@
             const data = projectData[currentStep]; 
             const nextBtn = document.getElementById('next-btn');
             const feedback = document.getElementById('logic-feedback');
-            
             let isValid = data.type === "single" ? (singleChoiceSelection !== null) : (data.type === "mix" ? Array.from(document.querySelectorAll('.slider')).reduce((a,b) => a + parseInt(b.value), 0) === 100 : true);
             
             if (currentStep === 1 && singleChoiceSelection) {
                 const selectedClimate = singleChoiceSelection.name;
                 const pickedFoundation = islandContext["Foundation"] || "";
-                
                 if (pickedFoundation.includes("Circular Reef") && (selectedClimate.includes("Polar") || selectedClimate.includes("Temperate"))) {
                     isValid = false;
                     feedback.style.display = 'block';
@@ -191,7 +188,6 @@
                     feedback.style.display = 'none';
                 }
             }
-
             nextBtn.disabled = !isValid;
             nextBtn.className = `bg-slate-800 text-white px-10 py-4 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600 shadow-md' : 'opacity-50 cursor-not-allowed'}`;
         }
@@ -204,42 +200,42 @@
             if (cat === "Food") {
                 if (formation.includes("Circular Reef") && data.some(d => d.name.includes("Arable") && d.p > 30)) 
                     insights.push("⚠️ Nature Check: The thin, salty soil of a reef makes large-scale crop farming very difficult.");
+                if (data.some(d => d.p > 40 && d.name.includes("Pastoral")))
+                    insights.push("⚠️ Land Risk: Heavy livestock farming uses a lot of space—be careful not to exhaust the land.");
                 if (data.some(d => d.p > 40 && d.name.includes("Insect"))) 
                     insights.push("🍎 Brilliant: Indoor insect rearing is incredibly efficient and uses very little water.");
-                if (data.length >= 3) 
-                    insights.push("🌟 Diversity: By using many food sources, your island is much safer from a single crop failure.");
+                if (data.length <= 1)
+                    insights.push("⚠️ Warning: Your island relies on only one food source. If it fails, the community will go hungry.");
             }
             if (cat === "Energy") {
                 if (climate.includes("Polar") && data.some(d => d.name.includes("Solar") && d.p > 30)) 
                     insights.push("⚠️ Nature Check: Solar is tough in Polar regions where the sun disappears for months.");
+                if (data.some(d => d.name.includes("Fossil") && d.p > 0))
+                    insights.push("⚠️ Carbon Risk: Using fossil fuels heats the planet and pollutes your island's air.");
                 if (data.every(d => !d.name.includes("Fossil"))) 
-                    insights.push("⚡ Clean Spirit: 100% renewable energy! You've successfully decoupled your growth from fossil fuels.");
-                if (data.some(d => d.name.includes("Nuclear") && d.p > 30))
-                    insights.push("🔋 Base Load: Nuclear provides steady power, but requires high-tech waste management.");
+                    insights.push("⚡ Clean Spirit: 100% renewable energy! You've successfully removed fossil fuels from your future.");
             }
             if (cat === "Drinking Water") {
                 if (climate.includes("Arid") && data.some(d => d.name.includes("Rainwater") && d.p > 40)) 
                     insights.push("⚠️ Climate Check: In a dry climate, rainwater tanks might stay empty for most of the year.");
-                if (data.some(d => d.p > 30 && d.name.includes("Desalination")))
-                    insights.push("💧 Tech Reliance: Desalination provides water security but uses a lot of energy to run.");
-                if (data.some(d => d.p > 30 && d.name.includes("Groundwater")))
-                    insights.push("🚰 Natural Wells: Tapping into groundwater is a reliable baseline, provided the aquifers stay healthy.");
+                if (data.some(d => d.p > 50 && d.name.includes("Desalination")))
+                    insights.push("💧 Energy Warning: Desalination providing water security depends entirely on your power staying on.");
             }
             if (cat === "Homes") {
                 if (data.some(d => d.p > 40 && d.name.includes("Clay"))) 
-                    insights.push("🏠 Breathable Walls: Using natural materials reduces carbon and connects people to the land.");
-                if (data.some(d => d.p > 30 && d.name.includes("High-rise"))) 
-                    insights.push("🏢 Efficiency: High-rise towers save land space but can feel disconnected from nature.");
+                    insights.push("🏠 Breathable Walls: Using clay and straw reduces carbon and keeps homes cool naturally.");
+                if (data.some(d => d.p > 40 && (d.name.includes("Bricks") || d.name.includes("towers")))) 
+                    insights.push("⚠️ Material Risk: Brittle materials like brick or high-rise concrete don't always flex well in quakes.");
                 if (data.some(d => d.name.includes("Hobbit")))
-                    insights.push("🌱 Hobbit Living: Earth-sheltered homes offer incredible natural insulation and storm protection.");
+                    insights.push("🌱 Hobbit Living: Earth-sheltered homes offer incredible natural insulation and safety from storms.");
             }
             if (cat === "Decisions") {
                 if (data.some(d => d.p > 50 && d.name.includes("Everyone"))) 
-                    insights.push("⚖️ Shared Power: Direct voting ensures every voice is heard, building deep community belonging.");
-                if (data.some(d => d.name.includes("Dictator"))) 
-                    insights.push("⚠️ Power Risk: A single leader can act fast, but long-term belonging may suffer.");
-                if (data.some(d => d.name.includes("Constitution")))
-                    insights.push("📜 Rule of Law: A constitution provides stability that lasts longer than any single leader.");
+                    insights.push("⚖️ Full Agency: Direct voting ensures every voice is heard, building deep community belonging.");
+                if (data.some(d => d.p > 40 && d.name.includes("Dictator"))) 
+                    insights.push("⚠️ Power Risk: A single leader can act fast, but your community might lose their sense of agency.");
+                if (!data.some(d => d.name.includes("Constitution")))
+                    insights.push("⚠️ Missed Chance: Without a Constitution, it is harder to protect the rights of nature.");
             }
             
             return insights.length > 0 ? insights.join("<br><br>") : "Your choices here set a unique heartbeat for the community.";
@@ -289,7 +285,7 @@
                     const perc = Math.round(s.score * 10);
                     item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="flex items-center justify-between"><div class="text-xl font-bold text-slate-800">${perc}%</div><div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${perc}%"></div></div></div>`; 
                     const block = document.createElement('div'); block.className = "p-5 bg-white border border-slate-100 rounded-2xl shadow-sm";
-                    block.innerHTML = `<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-2">${icons[s.category] || "🌟"} ${s.category}</h4><p class="text-sm text-slate-600 font-medium leading-relaxed">${getSmartFeedback(s.category, s.score, s.raw)}</p>`;
+                    block.innerHTML = `<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-2">${icons[s.category] || "🌟"} ${s.category}</h4><div class="text-sm text-slate-600 font-medium leading-relaxed">${getSmartFeedback(s.category, s.score, s.raw)}</div>`;
                     fbCont.appendChild(block);
                 }
                 container.appendChild(item);
@@ -318,7 +314,6 @@
                     feedbackItems.push("✅ Your natural homes (Timber/Clay/Hobbit) swayed and held firm, protecting many lives!");
                 }
             }
-
             if (id === 'Power') {
                 const energy = getRaw("Energy");
                 const food = getRaw("Food");
@@ -331,7 +326,6 @@
                     feedbackItems.push("✅ Your decentralized renewable grid allowed pockets of the island to keep the lights on.");
                 }
             }
-
             if (id === 'Tsunami') {
                 const homes = getRaw("Homes");
                 if (homes.some(h => h.name.includes("Stilt"))) {
@@ -342,7 +336,6 @@
                     feedbackItems.push("⚠️ Without raised housing, the coastal flood caused major displacement.");
                 }
             }
-            
             if (id === 'Volcano') {
                 const homes = getRaw("Homes");
                 if (homes.some(h => h.name.includes("towers"))) {
@@ -353,16 +346,37 @@
                     feedbackItems.push("✅ Your dispersed housing allowed for a quick and safe move away from the lava flows!");
                 }
             }
-
             if (id === 'Drought') {
                 const water = getRaw("Drinking Water");
                 if (water.some(w => w.name.includes("Surface"))) {
                     survival -= 35;
                     feedbackItems.push("❌ As the heat rose, your rivers and lakes evaporated, leaving the community thirsty.");
                 }
-                if (water.some(w => w.name.includes("Groundwater") || w.name.includes("Desalination"))) {
+                if (water.some(w => w.name.includes("Groundwater") || water.some(w => w.name.includes("Desalination")))) {
                     survival += 20;
                     feedbackItems.push("✅ Your deep wells or tech-based water systems kept the supply flowing through the heat.");
+                }
+            }
+            if (id === 'Storm') {
+                const homes = getRaw("Homes");
+                const energy = getRaw("Energy");
+                if (energy.some(e => e.name.includes("Wind") && e.p > 50)) {
+                    survival -= 20;
+                    feedbackItems.push("❌ The extreme winds were too strong for the turbines, causing a power blackout.");
+                }
+                if (homes.some(h => h.name.includes("Hobbit"))) {
+                    survival += 25;
+                    feedbackItems.push("✅ Your Hobbit Houses offered incredible shelter from the high-velocity winds.");
+                }
+            }
+            if (id === 'Blight') {
+                const food = getRaw("Food");
+                if (food.length <= 1) {
+                    survival -= 40;
+                    feedbackItems.push("❌ Because you relied on only one source of food, the blight was a total catastrophe.");
+                } else {
+                    survival += 20;
+                    feedbackItems.push("✅ Your diverse food mix meant you could switch to other sources when one failed.");
                 }
             }
 
