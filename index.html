@@ -3,50 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terra Nova Architect | Island Flourishing</title>
+    <title>Terra Nova Architect | Master Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; overflow-x: hidden; }
         .slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 5px; background: #e2e8f0; outline: none; }
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .hidden { display: none; }
         .choice-btn.selected { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
+        .option-row { padding-right: 15px; margin-bottom: 24px; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
 
     <header class="w-full max-w-3xl mb-6 text-center">
         <h1 class="text-3xl font-bold text-emerald-800 tracking-tight">Project Terra Nova</h1>
-        <p class="text-slate-500 italic mt-1">Measuring the Harmony of the Island Mix</p>
+        <p class="text-slate-500 italic mt-1">Building an island where people and nature thrive.</p>
     </header>
 
     <main id="app-container" class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-slate-100">
         
         <div id="screen-welcome" class="text-center py-6">
-            <div class="mb-6 text-7xl">🏘️</div>
-            <h2 class="text-2xl font-semibold mb-4 text-slate-800">The Architect's Balance</h2>
+            <div class="mb-6 text-7xl">🏝️</div>
+            <h2 class="text-2xl font-semibold mb-4 text-slate-800">Island Design</h2>
             <p class="mb-10 text-slate-600 leading-relaxed max-w-md mx-auto italic">
-                Will you island flourish? Find out now!
+                "We are building a home where both people and the land can grow together."
+            </p>
+            <p class="mb-10 text-slate-600 leading-relaxed max-w-md mx-auto">
+                For each section, decide on your "mix." Make sure your total for each page adds up to exactly 100% where appropriate.
             </p>
             <button onclick="startApp()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-emerald-700 shadow-lg transition-all active:scale-95">
-                Begin Simulation
+                Start Building
             </button>
         </div>
 
         <div id="screen-question" class="hidden">
             <div class="flex justify-between items-center mb-6">
                 <span id="category-label" class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs uppercase tracking-widest font-bold rounded-full">Category</span>
-                <span id="total-display" class="text-sm font-bold text-slate-400">Step 1 of 8</span>
+                <span id="total-display" class="text-sm font-bold text-slate-400 font-mono">Step 1 of 8</span>
             </div>
             
-            <h2 id="question-text" class="text-xl font-semibold mb-2 text-slate-800">Question Text</h2>
+            <h2 id="question-text" class="text-xl font-semibold mb-2 text-slate-800 uppercase tracking-tight">Question Text</h2>
             <p id="instruction-text" class="text-sm text-slate-500 mb-8 italic"></p>
             
-            <div id="options-container" class="space-y-8 overflow-y-auto max-h-[60vh] pr-2"></div>
+            <div id="options-container" class="space-y-8 overflow-y-auto max-h-[55vh] pr-4"></div>
 
             <div class="mt-12 pt-6 border-t border-slate-100 flex justify-end">
-                <button id="next-btn" onclick="nextStep()" class="bg-slate-800 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-md">
+                <button id="next-btn" onclick="nextStep()" class="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-md">
                     Next Step
                 </button>
             </div>
@@ -54,94 +58,138 @@
 
         <div id="screen-results" class="hidden py-4">
             <div class="text-center mb-8">
-                <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest">Final Flourish Index</h2>
-                <div id="score-display" class="text-7xl font-extrabold text-emerald-600 my-2">0</div>
+                <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest italic font-bold tracking-widest">How healthy is your island?</h2>
+                <div id="score-display" class="text-7xl font-extrabold text-emerald-600 my-2 font-mono">0</div>
                 <p id="outcome-title" class="text-lg font-semibold text-emerald-800 italic uppercase tracking-wide"></p>
             </div>
 
+            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2 uppercase text-xs tracking-widest">Section Results</h3>
             <div id="sectional-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"></div>
+            
+            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2 uppercase text-xs tracking-widest">The Real-World Meaning</h3>
             <div id="detailed-feedback-container" class="space-y-4 mb-8"></div>
 
             <button onclick="location.reload()" class="w-full bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all">
-                Iterate and Grow
+                Build a new version
             </button>
         </div>
     </main>
 
     <script>
         const projectData = [
-            { type: "single", category: "Foundation", options: [{ name: "Volcanic Island", flourish: 9 }, { name: "Continental Fragment", flourish: 8 }, { name: "Coral Atoll", flourish: 10 }] },
-            { type: "single", category: "Climate", options: [{ name: "Tropical / Subtropical", flourish: 10 }, { name: "Temperate", flourish: 9 }, { name: "Polar", flourish: 4 }, { name: "Arid", flourish: 5 }] },
-            { type: "mix", category: "Food", options: [{ name: "Arable Farming", flourish: 8 }, { name: "Pastoral Farming", flourish: 4 }, { name: "Mariculture", flourish: 7 }, { name: "Vertical & Hydroponic", flourish: 9 }, { name: "Insect Farming", flourish: 10 }] },
-            { type: "mix", category: "Energy", options: [{ name: "Solar Power", flourish: 10 }, { name: "Wind Power", flourish: 10 }, { name: "Hydroelectric", flourish: 9 }, { name: "Geothermal", flourish: 10 }, { name: "Wave/Tidal", flourish: 10 }, { name: "Biomass", flourish: 7 }, { name: "Nuclear", flourish: 5 }, { name: "Fossil Fuels", flourish: 1 }] },
-            { type: "mix", category: "Water", options: [{ name: "Surface Water", flourish: 7 }, { name: "Reservoirs/Dams", flourish: 6 }, { name: "Rainwater Collection", flourish: 10 }, { name: "Groundwater", flourish: 8 }, { name: "Desalination", flourish: 4 }] },
-            { type: "mix", category: "Housing", options: [{ name: "Cob & Rammed Earth", flourish: 10 }, { name: "Timber Framing", flourish: 9 }, { name: "Dry Stone", flourish: 10 }, { name: "Earth-Sheltered", flourish: 10 }, { name: "Stilt Houses", flourish: 9 }, { name: "Bricks and Mortar", flourish: 5 }, { name: "Shipping Container", flourish: 6 }, { name: "High-rise homes", flourish: 4 }] },
-            { type: "mix", category: "Governance", options: [{ name: "Everyone Decides (Direct)", flourish: 10 }, { name: "Choosing Representatives", flourish: 8 }, { name: "One Person in Charge", flourish: 2 }, { name: "No Leaders (Communalism)", flourish: 10 }, { name: "The Rulebook", flourish: 7 }] },
+            { type: "single", category: "Foundation", options: [{ name: "Volcanic Island (Made of lava rock)", flourish: 9 }, { name: "Continental Fragment (Old land)", flourish: 8 }, { name: "Coral Atoll (Made by sea life)", flourish: 10 }] },
+            { type: "single", category: "Climate", options: [{ name: "Tropical / Subtropical (Hot/Wet)", flourish: 10 }, { name: "Temperate (Mild seasons)", flourish: 9 }, { name: "Polar (Freezing)", flourish: 4 }, { name: "Arid (Very Dry)", flourish: 5 }] },
+            { 
+                type: "mix", 
+                category: "Food", 
+                options: [
+                    { name: "Arable Farming (Growing crops)", flourish: 8 }, 
+                    { name: "Pastoral Farming (Raising animals)", flourish: 4 }, 
+                    { name: "Mariculture (Food from the sea)", flourish: 7 }, 
+                    { name: "Vertical & Hydroponic (High-tech)", flourish: 9 }, 
+                    { name: "Insect Farming (Very low waste)", flourish: 10 }
+                ] 
+            },
+            { 
+                type: "mix", 
+                category: "Energy", 
+                options: [
+                    { name: "Solar Power", flourish: 10 }, { name: "Wind Power", flourish: 10 }, 
+                    { name: "Hydroelectric", flourish: 9 }, { name: "Geothermal", flourish: 10 }, 
+                    { name: "Wave & Tidal", flourish: 10 }, { name: "Biomass", flourish: 7 }, 
+                    { name: "Nuclear", flourish: 5 }, { name: "Fossil Fuels (Coal/Oil/Gas)", flourish: 1 }
+                ] 
+            },
+            { 
+                type: "mix", 
+                category: "Drinking Water", 
+                options: [
+                    { name: "Surface Water (Rivers & Lakes)", flourish: 7 }, 
+                    { name: "Reservoirs & Dams (Man-made storage)", flourish: 6 }, 
+                    { name: "Rainwater Collection", flourish: 10 }, 
+                    { name: "Groundwater (Natural wells)", flourish: 8 }, 
+                    { name: "Desalination (Cleaning seawater)", flourish: 4 }
+                ] 
+            },
+            { 
+                type: "mix", 
+                category: "Homes", 
+                options: [
+                    { name: "Cob & Rammed Earth (Natural mud)", flourish: 10 }, 
+                    { name: "Timber Framing (Using wood)", flourish: 9 }, 
+                    { name: "Dry Stone (No cement used)", flourish: 10 }, 
+                    { name: "Earth-Sheltered (Built into land)", flourish: 10 }, 
+                    { name: "Stilt Houses (Raised up)", flourish: 9 }, 
+                    { name: "Flat-Pack & Prefab (Factory-made kits)", flourish: 7 }, 
+                    { name: "Shipping Containers (Recycled metal)", flourish: 6 }, 
+                    { name: "Bricks and Mortar (Traditional)", flourish: 5 }, 
+                    { name: "High-rise homes (Building up)", flourish: 4 }
+                ] 
+            },
+            { 
+                type: "mix", 
+                category: "Decisions", 
+                options: [
+                    { name: "Everyone Decides (Direct Voting)", flourish: 10 }, 
+                    { name: "Choosing Reps (Voting for leaders)", flourish: 8 }, 
+                    { name: "One Person in Charge (One leader)", flourish: 2 }, 
+                    { name: "No Leaders (Sharing everything)", flourish: 10 }, 
+                    { name: "The Rulebook (A Constitution)", flourish: 7 }
+                ] 
+            },
             { 
                 type: "spectrum", 
-                category: "Community", 
-                question: "Community Spectrums",
-                instruction: "Rate your design on the scale between the 'Shadow' and the 'Flourish'.",
+                category: "Social Life", 
                 options: [
-                    { name: "Mobility", low: "Car-Centric / High-Speed", high: "Walkable / Slow Streets" },
-                    { name: "Social Connection", low: "Isolated & Private", high: "Shared Heart (Cohousing)" },
-                    { name: "Public Life", low: "No Gathering Spaces", high: "Village Hub (Third Space)" },
-                    { name: "Eco-Design", low: "Built-Over / Sterile", high: "Nature-First (Biophilic)" },
-                    { name: "Demographics", low: "Age-Segregated Zones", high: "Intergenerational Living" },
-                    { name: "Purpose", low: "Passive Consumption", high: "Maker / Workshop Districts" }
+                    { name: "Travel", low: "High-Speed Roads", high: "Walkable 'Slow' Streets" },
+                    { name: "Connection", low: "Private & Separate", high: "Shared Heart (Living together)" },
+                    { name: "Meeting Space", low: "No Meeting Places", high: "Village Hub (Common space)" },
+                    { name: "Nature", low: "Concrete & Sterile", high: "Nature-First (Greenery)" },
+                    { name: "Age Mix", low: "Separate Age Groups", high: "Mixed Ages (All together)" },
+                    { name: "Creation", low: "Buying everything", high: "Maker District (Making things)" }
                 ]
             }
         ];
 
-        let currentStep = 0, finalSectionalScores = [], islandContext = {};
+        const contextMultipliers = {
+            "Coral Atoll (Made by sea life)": { "Food": { "Arable Farming (Growing crops)": 0.5, "Mariculture (Food from the sea)": 1.4 }, "Drinking Water": { "Desalination (Cleaning seawater)": 1.5 }, "Homes": { "Stilt Houses (Raised up)": 1.3 } },
+            "Arid (Very Dry)": { "Drinking Water": { "Rainwater Collection": 0.4, "Desalination (Cleaning seawater)": 1.6 }, "Food": { "Vertical & Hydroponic (Growing in water/indoors)": 1.3 } },
+            "Tropical / Subtropical (Hot/Wet)": { "Energy": { "Solar Power": 1.2 }, "Homes": { "Stilt Houses (Raised up)": 1.3, "Earth-Sheltered (Built into land)": 1.2 } },
+            "Polar (Freezing)": { "Energy": { "Solar Power": 0.3, "Wind Power": 1.3 }, "Food": { "Vertical & Hydroponic (Growing in water/indoors)": 1.4 } }
+        };
+
+        let currentStep = 0, finalSectionalScores = [], islandContext = {}, singleChoiceSelection = null;
 
         function startApp() { document.getElementById('screen-welcome').classList.add('hidden'); document.getElementById('screen-question').classList.remove('hidden'); showQuestion(); }
 
         function showQuestion() {
             const data = projectData[currentStep];
             document.getElementById('category-label').innerText = data.category;
-            document.getElementById('question-text').innerText = data.question || data.category;
-            document.getElementById('instruction-text').innerText = data.instruction || (data.type === "single" ? "Select your physical foundation." : "Allocate your percentages (Total 100%).");
-            
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-            
+            document.getElementById('question-text').innerText = data.category;
+            document.getElementById('instruction-text').innerText = data.type === "spectrum" ? "How does it feel to live here?" : (data.type === "single" ? "How did the island start?" : "Choose your mix. Total must be 100%.");
+            const container = document.getElementById('options-container'); container.innerHTML = '';
+
             if (data.type === "single") {
-                document.getElementById('total-display').innerText = "Select One";
+                document.getElementById('total-display').innerText = "Pick One";
                 data.options.forEach((opt) => {
                     const btn = document.createElement('button');
                     btn.className = "choice-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 bg-white font-semibold transition-all hover:border-emerald-300";
                     btn.innerText = opt.name;
-                    btn.onclick = () => {
-                        document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-                        btn.classList.add('selected');
-                        singleChoiceSelection = opt;
-                        validate();
-                    };
+                    btn.onclick = () => { document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); singleChoiceSelection = opt; validate(); };
                     container.appendChild(btn);
                 });
             } else if (data.type === "mix") {
                 data.options.forEach((opt, index) => {
-                    const item = document.createElement('div');
-                    item.className = "space-y-1";
-                    item.innerHTML = `<div class="flex justify-between text-xs font-bold uppercase tracking-tight"><span>${opt.name}</span><span id="val-${index}" class="text-emerald-600">0%</span></div><input type="range" min="0" max="100" value="0" class="slider" id="slider-${index}" oninput="updateAllocation()">`;
+                    const item = document.createElement('div'); item.className = "option-row space-y-1";
+                    item.innerHTML = `<div class="flex justify-between text-xs font-bold uppercase"><span>${opt.name}</span><span id="val-${index}" class="text-emerald-600">0%</span></div><input type="range" min="0" max="100" value="0" class="slider" id="slider-${index}" oninput="updateAllocation()">`;
                     container.appendChild(item);
                 });
                 updateAllocation();
             } else if (data.type === "spectrum") {
                 document.getElementById('total-display').innerText = "Quality Rating";
                 data.options.forEach((opt, index) => {
-                    const item = document.createElement('div');
-                    item.className = "space-y-3";
-                    item.innerHTML = `
-                        <div class="text-sm font-bold text-slate-800 uppercase text-center">${opt.name}</div>
-                        <input type="range" min="0" max="10" value="5" class="slider" id="spec-${index}" oninput="document.getElementById('spec-val-${index}').innerText = this.value">
-                        <div class="flex justify-between text-[10px] font-medium text-slate-400">
-                            <span class="w-1/3 text-left leading-tight text-rose-500">${opt.low}</span>
-                            <span class="font-bold text-slate-600 text-lg" id="spec-val-${index}">5</span>
-                            <span class="w-1/3 text-right leading-tight text-emerald-600">${opt.high}</span>
-                        </div>
-                    `;
+                    const item = document.createElement('div'); item.className = "option-row space-y-3";
+                    item.innerHTML = `<div class="text-xs font-bold text-slate-800 uppercase text-center">${opt.name}</div><input type="range" min="0" max="10" value="5" class="slider" id="spec-${index}" oninput="document.getElementById('spec-val-${index}').innerText = this.value"><div class="flex justify-between text-[10px] font-medium"><span class="w-1/3 text-left text-rose-500">${opt.low}</span><span class="font-bold text-slate-600 text-lg" id="spec-val-${index}">5</span><span class="w-1/3 text-right text-emerald-600">${opt.high}</span></div>`;
                     container.appendChild(item);
                 });
             }
@@ -156,23 +204,44 @@
         }
 
         function validate() {
-            const data = projectData[currentStep];
-            const nextBtn = document.getElementById('next-btn');
+            const data = projectData[currentStep]; const nextBtn = document.getElementById('next-btn');
             let isValid = true;
-            if (data.type === "single") isValid = singleChoiceSelection != null;
+            if (data.type === "single") isValid = (typeof singleChoiceSelection !== 'undefined' && singleChoiceSelection !== null);
             if (data.type === "mix") isValid = Array.from(document.querySelectorAll('.slider')).reduce((a,b) => a + parseInt(b.value), 0) === 100;
             nextBtn.disabled = !isValid;
-            nextBtn.className = `bg-slate-800 text-white px-8 py-4 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600' : 'opacity-50 cursor-not-allowed'}`;
+            nextBtn.className = `bg-slate-800 text-white px-10 py-4 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600 shadow-md' : 'opacity-50 cursor-not-allowed'}`;
+        }
+
+        function getFeedback(cat, score) {
+            const s = Math.round(score * 10);
+            const bands = {
+                "Food": [{m:95, t:"🌟 PERFECT: Your food system heals the soil and feeds everyone. Pure flourishing!"}, {m:85, t:"🌱 GREAT: Very healthy. You are using almost entirely natural cycles."}, {m:75, t:"🥗 GOOD: Most food is grown well, but nature is still working hard to keep up."}, {m:65, t:"🌾 OKAY: A solid start, but you could use more low-waste farming like insects."}, {m:55, t:"🚜 BALANCED: You have food, but half comes from high-impact farming."}, {m:45, t:"🏗️ STRUGGLING: You are asking a lot from the land. Try more natural methods."}, {m:35, t:"⚠️ TOUGH: The soil is getting tired. Nature needs more help here."}, {m:25, t:"❗ WEAK: High-waste farming is taking over. This isn't sustainable yet."}, {m:15, t:"🛑 ALERT: The island is being damaged. Time to rethink the food mix."}, {m:0, t:"❌ CRITICAL: This mix is hurting the island. You need to help the land heal."}],
+                "Energy": [{m:95, t:"🌟 PERFECT: 100% natural energy! The air is clean and the future is bright."}, {m:85, t:"☀️ BRILLIANT: Almost entirely powered by nature's own sun and wind."}, {m:75, t:"🔋 GREAT: You have a strong renewable mix. Only a tiny shadow remains."}, {m:65, t:"⚡ SOLID: Mostly clean power, but there is still some smoke in the air."}, {m:55, t:"⚙️ FAIR: Half your energy is clean, but the other half is dirty. Keep going!"}, {m:45, t:"🔌 MIXED: Fossil fuels are starting to outweigh the sun and wind."}, {m:35, t:"☁️ SMOKY: The island is feeling the heat from fossil fuels. Use more sun!"}, {m:25, t:"💨 POOR: Very high carbon impact. Nature is struggling with the pollution."}, {m:15, t:"🛑 ALERT: This energy mix is heavy and dirty. The island needs help."}, {m:0, t:"❌ CRITICAL: High fossil fuels are damaging the land. Turn to the wind!"}],
+                "Drinking Water": [{m:95, t:"🌟 PERFECT: You are working perfectly with the clouds and rain. Pure harmony!"}, {m:85, t:"💧 BRILLIANT: Rainwater and natural springs are doing all the work."}, {m:75, t:"🚰 GREAT: Most of your water is collected naturally and carefully."}, {m:65, t:"⛲ GOOD: A dependable mix, but you're starting to use high-energy systems."}, {m:55, t:"🏢 FAIR: You have enough water, but the cost to the island is visible."}, {m:45, t:"🔧 TOUGH: Desalination and dams are putting pressure on the coast."}, {m:35, t:"🌊 STRAINED: High energy is needed to keep the water flowing. Watch out."}, {m:25, t:"❗ WEAK: The water system is expensive and hard on the land."}, {m:15, t:"🛑 ALERT: You are taking more than nature can give back easily."}, {m:0, t:"❌ CRITICAL: This water system is not sustainable. Try more rain collection."}],
+                "Homes": [{m:95, t:"🌟 PERFECT: Homes made of the land! Natural, healthy, and peaceful shelter."}, {m:85, t:"🏡 BRILLIANT: You are using local mud, stone, and wood. Very healthy!"}, {m:75, t:"🔨 GREAT: Sturdy homes that mostly respect the island's materials."}, {m:65, t:"🧱 GOOD: Modern and safe, but they took a lot of energy to build."}, {m:55, t:"🏘️ FAIR: A mix of styles. Some feel connected to the land, some feel separate."}, {m:45, t:"🏗️ TOUGH: These buildings are functional but they can make people feel lonely."}, {m:35, t:"🏢 STRAINED: High-rise living is efficient but it misses the shared heart."}, {m:25, t:"❗ WEAK: High-embodied energy means these homes have a dirty footprint."}, {m:15, t:"🛑 ALERT: Bricks and metal are taking over. Try more natural building."}, {m:0, t:"❌ CRITICAL: These homes don't breathe with the island. Rethink the shelter."}],
+                "Decisions": [{m:95, t:"🌟 PERFECT: Pure agency! Everyone has a voice and everyone belongs."}, {m:85, t:"🤝 BRILLIANT: Shared power and shared responsibility. Very strong community."}, {m:75, t:"🗳️ GREAT: Clear rules and fair leaders. People feel seen and heard."}, {m:65, t:"📜 GOOD: A solid rulebook keeps things stable and safe for everyone."}, {m:55, t:"⚖️ FAIR: A balance of power, but some voices are starting to go unheard."}, {m:45, t:"🏛️ TOUGH: Leadership is getting narrow. Try to give more power back."}, {m:35, t:"⚠️ STRAINED: Decisions are made by a small few. The circle is breaking."}, {m:25, t:"❗ WEAK: People have very little say in their own lives. Not flourishing."}, {m:15, t:"🛑 ALERT: One leader is silincing the island. Power needs to be shared."}, {m:0, t:"❌ CRITICAL: No agency. Flourishing is impossible without a voice."}],
+                "Social Life": [{m:95, t:"🌟 PERFECT: A true paradise for people. No one is lonely and nature is everywhere."}, {m:85, t:"🏘️ BRILLIANT: Shared hearts and slow streets. Life is lived together."}, {m:75, t:"🌳 GREAT: Nature-first design makes this a very peaceful place to live."}, {m:65, t:"🏡 GOOD: Good spaces to meet, but travel could be slower and greener."}, {m:55, t:"🏘️ FAIR: You have some social spots, but people still live quite separately."}, {m:45, t:"🚶 TOUGH: Car-centric roads are making the island feel fast and sterile."}, {m:35, t:"🏙️ STRAINED: Segregated ages and private living make for a lonely island."}, {m:25, t:"❗ WEAK: Consumer spaces over maker spaces. Purpose is being lost."}, {m:15, t:"🛑 ALERT: Concrete is winning over greenery. Bring back the biophilic design."}, {m:0, t:"❌ CRITICAL: Isolated and fragmented. This isn't a community yet."}]
+            };
+            if(!bands[cat]) return "Your choices here set the heartbeat of the island.";
+            return bands[cat].find(x => s >= x.m).t;
         }
 
         function nextStep() {
-            const data = projectData[currentStep];
-            let score = 0, label = "";
-            if (data.type === "single") { score = singleChoiceSelection.flourish; label = singleChoiceSelection.name; }
-            else if (data.type === "mix") { document.querySelectorAll('.slider').forEach((s, i) => { score += (parseInt(s.value) / 100) * data.options[i].flourish; }); }
-            else if (data.type === "spectrum") { let sum = 0; document.querySelectorAll('.slider').forEach(s => sum += parseInt(s.value)); score = sum / data.options.length; }
+            const data = projectData[currentStep]; let score = 0, label = "";
+            if (data.type === "single") { 
+                score = data.options.find(o => o.name === (singleChoiceSelection ? singleChoiceSelection.name : "")).flourish; 
+                label = singleChoiceSelection.name; islandContext[data.category] = label; singleChoiceSelection = null;
+            } else if (data.type === "mix") {
+                document.querySelectorAll('.slider').forEach((s, i) => {
+                    let val = data.options[i].flourish;
+                    [islandContext["Foundation"], islandContext["Climate"]].forEach(ctx => {
+                        if (contextMultipliers[ctx] && contextMultipliers[ctx][data.category] && contextMultipliers[ctx][data.category][data.options[i].name]) { val *= contextMultipliers[ctx][data.category][data.options[i].name]; }
+                    });
+                    score += (parseInt(s.value) / 100) * val;
+                });
+            } else if (data.type === "spectrum") { let sum = 0; document.querySelectorAll('.slider').forEach(s => sum += parseInt(s.value)); score = sum / data.options.length; }
 
-            finalSectionalScores.push({ category: data.category, score: score, label: label, type: data.type });
+            finalSectionalScores.push({ category: data.category, score: Math.min(10, score), label: label, type: data.type });
             currentStep++; if (currentStep < projectData.length) { showQuestion(); } else { showResults(); }
         }
 
@@ -181,14 +250,16 @@
             const scored = finalSectionalScores.filter(s => s.type !== "single");
             const finalIndex = Math.round((scored.reduce((a,c) => a + c.score, 0) / (scored.length * 10)) * 100);
             document.getElementById('score-display').innerText = finalIndex;
-            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "Resilient Sanctuary" : "Developing Settlement";
-            
-            const container = document.getElementById('sectional-results');
+            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "A Healthy, Healing Home" : (finalIndex > 65 ? "A Solid Community" : "An Island in Need");
+            const container = document.getElementById('sectional-results'); const fbCont = document.getElementById('detailed-feedback-container');
             finalSectionalScores.forEach(s => {
-                const item = document.createElement('div');
-                item.className = "bg-slate-50 p-3 rounded-xl border border-slate-100";
-                const sPerc = Math.round(s.score * 10);
-                item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase">${s.category}</div><div class="flex items-center justify-between"><div class="text-xl font-bold text-slate-800">${s.type === "single" ? s.label : sPerc + "%"}</div><div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${sPerc}%"></div></div></div>`; 
+                const item = document.createElement('div'); item.className = "bg-slate-50 p-3 rounded-xl border border-slate-100";
+                const perc = Math.round(s.score * 10);
+                if (s.type === "single") { item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="text-sm font-bold text-slate-800 leading-tight">${s.label}</div>`; }
+                else { 
+                    item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="flex items-center justify-between"><div class="text-xl font-bold text-slate-800">${perc}%</div><div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${perc}%"></div></div></div>`; 
+                    const fb = document.createElement('div'); fb.className = "p-4 bg-white border border-slate-50 rounded-xl text-xs text-slate-600 font-medium shadow-sm leading-relaxed"; fb.innerText = getFeedback(s.category, s.score); fbCont.appendChild(fb);
+                }
                 container.appendChild(item);
             });
         }
