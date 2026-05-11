@@ -250,7 +250,15 @@
             const scored = finalSectionalScores.filter(s => s.type !== "single");
             const finalIndex = Math.round((scored.reduce((a,c) => a + c.score, 0) / (scored.length * 10)) * 100);
             document.getElementById('score-display').innerText = finalIndex;
-            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "A Healthy, Healing Home" : (finalIndex > 65 ? "A Solid Community" : "An Island in Need");
+            let outcome = "";
+if (finalIndex >= 95) outcome = "A Regenerative Paradise 🌿";
+else if (finalIndex >= 85) outcome = "A Healthy, Healing Home ✨";
+else if (finalIndex >= 70) outcome = "A Solid Community 🤝";
+else if (finalIndex >= 55) outcome = "A Struggling Society ⚠️";
+else if (finalIndex >= 40) outcome = "An Island in Tension ⚡";
+else outcome = "An Island in Crisis 🚨";
+
+document.getElementById('outcome-title').innerText = outcome;
             const container = document.getElementById('sectional-results'); container.innerHTML = '';
             const fbCont = document.getElementById('detailed-feedback-container'); fbCont.innerHTML = '';
             const icons = {"Food":"🍎", "Energy":"⚡", "Drinking Water":"💧", "Homes":"🏠", "Decisions":"⚖️", "Social Life":"🌟"};
