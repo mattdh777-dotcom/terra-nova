@@ -7,129 +7,163 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; color: #1e293b; }
-        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 5px; background: #e2e8f0; outline: none; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .hidden { display: none; }
-        .score-bar { height: 6px; border-radius: 3px; background: #e2e8f0; overflow: hidden; }
-        .score-fill { height: 100%; background: #10b981; transition: width 1s ease-out; }
+        .choice-btn.selected { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
 
-    <header class="w-full max-w-2xl mb-6 text-center">
+    <header class="w-full max-w-3xl mb-6 text-center">
         <h1 class="text-3xl font-bold text-emerald-800 tracking-tight">Project Terra Nova</h1>
-        <p class="text-slate-500 italic mt-1">Measuring the harmony of your island design.</p>
+        <p class="text-slate-500 italic mt-1">Measuring the Harmony of Human & Island Flourishing</p>
     </header>
 
-    <main id="app-container" class="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-slate-100">
+    <main id="app-container" class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-slate-100">
         
-        <!-- Welcome Screen -->
-        <div id="screen-welcome" class="text-center py-10">
-            <div class="mb-6 text-7xl">🏝️</div>
-            <h2 class="text-2xl font-semibold mb-4">Welcome, Architect.</h2>
-            <p class="mb-10 text-slate-600 leading-relaxed">
-                As you build, we will track the 'Flourish Level' of each system—from Energy to Government. 
-                Your goal is to find balance across all seven areas.
+        <div id="screen-welcome" class="text-center py-6">
+            <div class="mb-6 text-7xl">⚖️</div>
+            <h2 class="text-2xl font-semibold mb-4 text-slate-800">The Balance of Flourishing</h2>
+            <p class="mb-10 text-slate-600 leading-relaxed max-w-md mx-auto">
+                Welcome, Architect. You will define your island's foundation, then allocate your resource mix. 
+                Remember: the goal is to help both humans and the island flourish together.
             </p>
             <button onclick="startApp()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-emerald-700 shadow-lg transition-all active:scale-95">
-                Start Design Review
+                Begin Design
             </button>
         </div>
 
-        <!-- Question Screen -->
         <div id="screen-question" class="hidden">
-            <div class="flex justify-between items-center mb-8">
+            <div class="flex justify-between items-center mb-6">
                 <span id="category-label" class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs uppercase tracking-widest font-bold rounded-full">Category</span>
-                <span id="progress-text" class="text-sm font-medium text-slate-400">1 of 7</span>
+                <span id="total-display" class="text-sm font-bold text-slate-400">Step 1 of 7</span>
             </div>
             
-            <h2 id="question-text" class="text-xl md:text-2xl font-semibold mb-8 text-slate-800 leading-snug">Question Text?</h2>
+            <h2 id="question-text" class="text-xl font-semibold mb-2 text-slate-800">Question Text</h2>
+            <p id="instruction-text" class="text-sm text-slate-500 mb-8 italic">Instruction text here.</p>
             
-            <div id="options-container" class="space-y-4"></div>
+            <div id="options-container" class="space-y-6"></div>
 
-            <div class="mt-12 w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                <div id="progress-bar" class="bg-emerald-500 h-full transition-all duration-500"></div>
+            <div class="mt-12 pt-6 border-t border-slate-100 flex justify-end">
+                <button id="next-btn" onclick="nextStep()" class="bg-slate-800 text-white px-8 py-3 rounded-xl font-bold opacity-50 cursor-not-allowed transition-all" disabled>
+                    Next Step
+                </button>
             </div>
         </div>
 
-        <!-- Results Screen -->
         <div id="screen-results" class="hidden py-4">
             <div class="text-center mb-8">
-                <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest">Master Flourish Index</h2>
+                <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest">The Flourish Index</h2>
                 <div id="score-display" class="text-7xl font-extrabold text-emerald-600 my-2">0</div>
-                <p id="outcome-title" class="text-lg font-semibold text-emerald-800 italic"></p>
+                <p id="outcome-title" class="text-lg font-semibold text-emerald-800 italic uppercase tracking-wide"></p>
             </div>
 
-            <!-- Sectional Breakdown -->
-            <div id="sectional-results" class="space-y-6 mb-10">
-                <!-- Scores for each category injected here -->
-            </div>
+            <div id="sectional-results" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10"></div>
 
-            <div class="bg-slate-50 p-6 rounded-2xl mb-8 border border-slate-100">
-                <p id="feedback-text" class="text-slate-700 leading-relaxed italic"></p>
+            <div class="bg-emerald-50 p-6 rounded-2xl mb-8 border border-emerald-100">
+                <p id="feedback-text" class="text-slate-700 leading-relaxed text-center font-medium italic"></p>
             </div>
 
             <button onclick="location.reload()" class="w-full bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all">
-                Refine Your Design
+                Iterate Your Island
             </button>
         </div>
     </main>
 
     <script>
         const projectData = [
-            { category: "Geography", icon: "🌍", question: "Where is your island located?",
+            {
+                type: "single",
+                category: "Physical Foundation",
+                question: "What is the Formation Type of your island?",
+                instruction: "Choose the physical origin of your land.",
                 options: [
-                    { text: "Temperate/Coastal", score: 8, feedback: "Stable and resource-rich." },
-                    { text: "Rugged Highlands", score: 7, feedback: "Hardy and resilient choice." },
-                    { text: "Tropical Lowlands", score: 6, feedback: "Vibrant but climate-sensitive." }
+                    { name: "Volcanic Island", flourish: 9 },
+                    { name: "Continental Fragment", flourish: 8 },
+                    { name: "Coral Atoll", flourish: 10 }
                 ]
             },
-            { category: "Nature", icon: "🌳", question: "How much space is kept as 'Ancient Wild'?",
+            {
+                type: "single",
+                category: "Climate Zone",
+                question: "Where is your island located?",
+                instruction: "The climate dictates the ease of human flourishing.",
                 options: [
-                    { text: "Over 75%", score: 10, feedback: "You are a Guardian of the wild." },
-                    { text: "50-75%", score: 8, feedback: "A respectful balance." },
-                    { text: "Less than 50%", score: 4, feedback: "The wild is under pressure here." }
+                    { name: "Tropical / Subtropical", flourish: 10 },
+                    { name: "Temperate", flourish: 9 },
+                    { name: "Polar", flourish: 4 },
+                    { name: "Arid", flourish: 5 }
                 ]
             },
-            { category: "Food", icon: "🍎", question: "What is your primary food system?",
+            {
+                type: "mix",
+                category: "Food Provision",
+                question: "What is your Farming & Food mix?",
+                instruction: "Allocate percentages for each method. Total must be 100%.",
                 options: [
-                    { text: "Regenerative Poly-cultures", score: 10, feedback: "Healing the soil as you grow." },
-                    { text: "Integrated Community Gardens", score: 8, feedback: "Strengthening social bonds." },
-                    { text: "Intensive Tech-Farming", score: 5, feedback: "Efficient but high resource cost." }
+                    { name: "Arable Farming", flourish: 8 },
+                    { name: "Pastoral Farming", flourish: 4 },
+                    { name: "Mariculture", flourish: 7 },
+                    { name: "Vertical & Hydroponic", flourish: 9 },
+                    { name: "Insect Farming", flourish: 10 }
                 ]
             },
-            { category: "Water", icon: "💧", question: "How do you deliver water?",
+            {
+                type: "mix",
+                category: "Energy Source",
+                question: "What is your Energy mix?",
+                instruction: "Balance your power sources. Total must be 100%.",
                 options: [
-                    { text: "Gravity & Rain Harvest", score: 10, feedback: "Working with the land's flow." },
-                    { text: "Community Well-System", score: 8, feedback: "A shared and dependable source." },
-                    { text: "High-Pressure Pumping", score: 5, feedback: "Convenient but energy-heavy." }
+                    { name: "Solar / Wind / Hydro / Wave / Geo", flourish: 10 },
+                    { name: "Biomass", flourish: 7 },
+                    { name: "Nuclear Power", flourish: 5 },
+                    { name: "Fossil Fuels (Coal, Oil, Gas)", flourish: 1 }
                 ]
             },
-            { category: "Energy", icon: "⚡", question: "What powers your island?",
+            {
+                type: "mix",
+                category: "Potable Water",
+                question: "How do you provide clean water?",
+                instruction: "Allocate your water sources. Total must be 100%.",
                 options: [
-                    { text: "Solar & Wind", score: 10, feedback: "Looking to a clean future." },
-                    { text: "Biogas (Waste-to-Energy)", score: 9, feedback: "Great systems thinking." },
-                    { text: "Imported Fuel", score: 3, feedback: "Creates outside dependency." }
+                    { name: "Surface Water (Rivers/Lakes)", flourish: 7 },
+                    { name: "Reservoirs and Dams", flourish: 6 },
+                    { name: "Rainwater Collection", flourish: 10 },
+                    { name: "Groundwater Aquifers", flourish: 8 },
+                    { name: "Desalination", flourish: 4 }
                 ]
             },
-            { category: "Housing", icon: "🏠", question: "How is your housing arranged?",
+            {
+                type: "mix",
+                category: "Community Design",
+                question: "What architecture & layout defines your home?",
+                instruction: "Which models describe your housing? Total must be 100%.",
                 options: [
-                    { text: "Circular Clusters", score: 10, feedback: "Belonging is built-in here." },
-                    { text: "Dispersed Eco-Cabins", score: 8, feedback: "High nature-connection." },
-                    { text: "Structured Grid", score: 6, feedback: "Organized but less social." }
+                    { name: "Modular Construction (MMC)", flourish: 8 },
+                    { name: "Biophilic Design", flourish: 10 },
+                    { name: "Cohousing", flourish: 10 },
+                    { name: "Social Architecture", flourish: 9 }
                 ]
             },
-            { category: "Government", icon: "⚖️", question: "How are decisions made?",
+            {
+                type: "mix",
+                category: "Governance",
+                question: "How is the community governed?",
+                instruction: "Define the power structure. Total must be 100%.",
                 options: [
-                    { text: "Consensus/Circle", score: 10, feedback: "Inclusion is your foundation." },
-                    { text: "Youth Assembly", score: 9, feedback: "Dynamic and full of agency." },
-                    { text: "Specialist Council", score: 7, feedback: "Decisions based on expertise." }
+                    { name: "Representative Democracy", flourish: 7 },
+                    { name: "Social Democracy", flourish: 9 },
+                    { name: "Centralised Leadership", flourish: 2 },
+                    { name: "Consensus / Community Gov", flourish: 10 }
                 ]
             }
         ];
 
         let currentStep = 0;
-        let sectionalScores = [];
+        let finalSectionalScores = [];
+        let singleChoiceSelection = null;
 
         function startApp() {
             document.getElementById('screen-welcome').classList.add('hidden');
@@ -140,31 +174,91 @@
         function showQuestion() {
             const data = projectData[currentStep];
             document.getElementById('category-label').innerText = data.category;
-            document.getElementById('progress-text').innerText = `${currentStep + 1} of ${projectData.length}`;
             document.getElementById('question-text').innerText = data.question;
-            document.getElementById('progress-bar').style.width = `${((currentStep + 1) / projectData.length) * 100}%`;
-
+            document.getElementById('instruction-text').innerText = data.instruction;
+            document.getElementById('total-display').innerText = `Step ${currentStep + 1} of 7`;
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-            
-            data.options.forEach((opt) => {
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left p-5 rounded-2xl border-2 border-slate-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all bg-white font-medium text-slate-700 shadow-sm";
-                btn.innerText = opt.text;
-                btn.onclick = () => selectOption(opt);
-                container.appendChild(btn);
-            });
+            singleChoiceSelection = null;
+
+            if (data.type === "single") {
+                document.getElementById('total-display').innerText = "Select One";
+                data.options.forEach((opt, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = "choice-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 bg-white font-semibold transition-all hover:border-emerald-300";
+                    btn.innerText = opt.name;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                        singleChoiceSelection = opt;
+                        validate();
+                    };
+                    container.appendChild(btn);
+                });
+            } else {
+                data.options.forEach((opt, index) => {
+                    const item = document.createElement('div');
+                    item.className = "space-y-1";
+                    item.innerHTML = `
+                        <div class="flex justify-between text-sm font-bold">
+                            <span class="text-slate-600 uppercase tracking-tight">${opt.name}</span>
+                            <span id="val-${index}" class="text-emerald-600">0%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" class="slider" id="slider-${index}" oninput="updateAllocation()">
+                    `;
+                    container.appendChild(item);
+                });
+                updateAllocation();
+            }
+            validate();
         }
 
-        function selectOption(opt) {
-            sectionalScores.push({
-                category: projectData[currentStep].category,
-                icon: projectData[currentStep].icon,
-                score: opt.score,
-                feedback: opt.feedback
+        function updateAllocation() {
+            const sliders = document.querySelectorAll('.slider');
+            let total = 0;
+            sliders.forEach((s, i) => {
+                total += parseInt(s.value);
+                document.getElementById(`val-${i}`).innerText = `${s.value}%`;
             });
-            
+            document.getElementById('total-display').innerText = `Total: ${total}%`;
+            document.getElementById('total-display').className = total === 100 ? "text-sm font-bold text-emerald-600" : "text-sm font-bold text-rose-500";
+            validate();
+        }
+
+        function validate() {
+            const data = projectData[currentStep];
+            const nextBtn = document.getElementById('next-btn');
+            let isValid = false;
+
+            if (data.type === "single") {
+                isValid = singleChoiceSelection !== null;
+            } else {
+                let total = 0;
+                document.querySelectorAll('.slider').forEach(s => total += parseInt(s.value));
+                isValid = total === 100;
+            }
+
+            nextBtn.disabled = !isValid;
+            nextBtn.className = `bg-slate-800 text-white px-8 py-3 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600 shadow-lg shadow-emerald-100' : 'opacity-50 cursor-not-allowed'}`;
+        }
+
+        function nextStep() {
+            const data = projectData[currentStep];
+            let score = 0;
+
+            if (data.type === "single") {
+                score = singleChoiceSelection.flourish;
+            } else {
+                const sliders = document.querySelectorAll('.slider');
+                sliders.forEach((s, i) => {
+                    score += (parseInt(s.value) / 100) * data.options[i].flourish;
+                });
+            }
+
+            finalSectionalScores.push({ category: data.category, score: score });
             currentStep++;
+
             if (currentStep < projectData.length) {
                 showQuestion();
             } else {
@@ -175,30 +269,28 @@
         function showResults() {
             document.getElementById('screen-question').classList.add('hidden');
             document.getElementById('screen-results').classList.remove('hidden');
-            
-            const total = sectionalScores.reduce((acc, curr) => acc + curr.score, 0);
-            const finalIndex = Math.round((total / 70) * 100);
-            
-            // Final Score Display
-            document.getElementById('score-display').innerText = finalIndex;
-            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "Regenerative Haven" : (finalIndex > 60 ? "Balanced Settlement" : "Evolving Community");
 
-            // Sectional Breakdown
-            const sectionalContainer = document.getElementById('sectional-results');
-            sectionalScores.forEach(section => {
-                const row = document.createElement('div');
-                row.innerHTML = `
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm font-bold text-slate-700">${section.icon} ${section.category}</span>
-                        <span class="text-xs font-bold text-emerald-600">${section.score}/10</span>
+            const totalSum = finalSectionalScores.reduce((acc, curr) => acc + curr.score, 0);
+            const finalIndex = Math.round((totalSum / (projectData.length * 10)) * 100);
+
+            document.getElementById('score-display').innerText = finalIndex;
+            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "Regenerative Haven" : (finalIndex > 65 ? "Steady Settlement" : "Struggling Ecosystem");
+
+            const container = document.getElementById('sectional-results');
+            finalSectionalScores.forEach(s => {
+                const item = document.createElement('div');
+                item.className = "bg-slate-50 p-4 rounded-xl border border-slate-100";
+                item.innerHTML = `
+                    <div class="flex justify-between text-xs font-bold text-slate-500 mb-2 uppercase tracking-widest">${s.category}</div>
+                    <div class="flex items-end gap-2">
+                        <div class="text-2xl font-bold text-slate-800">${Math.round(s.score * 10)}%</div>
+                        <div class="text-xs text-emerald-600 mb-1 font-bold">FLOURISH</div>
                     </div>
-                    <div class="score-bar"><div class="score-fill" style="width: ${section.score * 10}%"></div></div>
                 `;
-                sectionalContainer.appendChild(row);
+                container.appendChild(item);
             });
 
-            const randomFeedback = sectionalScores[Math.floor(Math.random() * sectionalScores.length)].feedback;
-            document.getElementById('feedback-text').innerText = `Your approach to ${sectionalScores[0].category.toLowerCase()} shows a thoughtful start. ${randomFeedback} Consider how every choice impacts the collective whole.`;
+            document.getElementById('feedback-text').innerText = "As trusted guides, we celebrate your journey. Your island is not just a place, but a process of becoming. Every percentage choice shows your commitment to a shared future.";
         }
     </script>
 </body>
