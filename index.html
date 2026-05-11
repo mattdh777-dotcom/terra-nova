@@ -12,30 +12,22 @@
         .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .hidden { display: none; }
         .choice-btn.selected { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
-        /* Ensure the sliders are easy to scroll on mobile */
-        #options-container::-webkit-scrollbar { width: 4px; }
-        #options-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
 
     <header class="w-full max-w-3xl mb-6 text-center">
         <h1 class="text-3xl font-bold text-emerald-800 tracking-tight">Project Terra Nova</h1>
-        <p class="text-slate-500 italic mt-1">Measuring Human and Nature Flourishing</p>
+        <p class="text-slate-500 italic mt-1">A Guide to Flourishing Islands</p>
     </header>
 
     <main id="app-container" class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-slate-100">
         
         <div id="screen-welcome" class="text-center py-6">
-            <div class="mb-6 text-7xl">⚖️</div>
+            <div class="mb-6 text-7xl">🌳</div>
             <h2 class="text-2xl font-semibold mb-4 text-slate-800">The Architect's Balance</h2>
             <p class="mb-10 text-slate-600 leading-relaxed max-w-md mx-auto italic">
-                "We are the guides of this land. How will we help it thrive?"
-            </p>
-            <p class="mb-10 text-slate-600 leading-relaxed max-w-md mx-auto">
-                Welcome. You will define your island's foundations and allocate your resource mix. 
-                Your goal is to reach 100% for each category while maximizing the 'Flourish' potential of your choices.
-                You will receive a Flourish Score at the end.
+                "We are not just designing an island; we are nurturing a home where both people and nature can find their breath."
             </p>
             <button onclick="startApp()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-bold hover:bg-emerald-700 shadow-lg transition-all active:scale-95">
                 Begin Evaluation
@@ -49,7 +41,7 @@
             </div>
             
             <h2 id="question-text" class="text-xl font-semibold mb-2 text-slate-800">Question Text</h2>
-            <p id="instruction-text" class="text-sm text-slate-500 mb-8 italic">Instruction text here.</p>
+            <p id="instruction-text" class="text-sm text-slate-500 mb-8 italic"></p>
             
             <div id="options-container" class="space-y-6 overflow-y-auto max-h-[50vh] pr-2"></div>
 
@@ -64,16 +56,14 @@
             <div class="text-center mb-8">
                 <h2 class="text-sm font-medium text-slate-400 uppercase tracking-widest">Island Flourish Index</h2>
                 <div id="score-display" class="text-7xl font-extrabold text-emerald-600 my-2">0</div>
-                <p id="outcome-title" class="text-lg font-semibold text-emerald-800 italic uppercase tracking-wide"></p>
+                <p id="outcome-title" class="text-lg font-semibold text-emerald-800 italic"></p>
             </div>
 
-            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Category Breakdown</h3>
+            <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Your Island's Profile</h3>
             <div id="sectional-results" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10"></div>
 
             <h3 class="font-bold text-slate-800 mb-4 border-b pb-2">Real-World Meaning:</h3>
-            <div class="bg-emerald-50 p-6 rounded-2xl mb-8 border border-emerald-100">
-                <p id="explanation-text" class="text-slate-700 leading-relaxed text-sm font-medium"></p>
-            </div>
+            <div id="detailed-feedback-container" class="space-y-4 mb-8"></div>
 
             <button onclick="location.reload()" class="w-full bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition-all">
                 Iterate Your Island
@@ -83,119 +73,30 @@
 
     <script>
         const projectData = [
-            {
-                type: "single",
-                category: "Formation",
-                question: "Physical Foundation",
-                instruction: "Choose your island's geological origin.",
-                options: [
-                    { name: "Volcanic Island", flourish: 9 },
-                    { name: "Continental Fragment", flourish: 8 },
-                    { name: "Coral Atoll", flourish: 10 }
-                ]
-            },
-            {
-                type: "single",
-                category: "Climate",
-                question: "Location Zone",
-                instruction: "Where in the world is your island placed?",
-                options: [
-                    { name: "Tropical / Subtropical", flourish: 10 },
-                    { name: "Temperate", flourish: 9 },
-                    { name: "Polar", flourish: 4 },
-                    { name: "Arid", flourish: 5 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Food",
-                question: "Food Provision Mix",
-                instruction: "Allocate your farming methods (Total 100%).",
-                options: [
-                    { name: "Arable Farming", flourish: 8 },
-                    { name: "Pastoral Farming", flourish: 4 },
-                    { name: "Mariculture", flourish: 7 },
-                    { name: "Vertical & Hydroponic", flourish: 9 },
-                    { name: "Insect Farming", flourish: 10 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Energy",
-                question: "Power Systems",
-                instruction: "Define your energy source mix (Total 100%).",
-                options: [
-                    { name: "Solar Power", flourish: 10 },
-                    { name: "Wind Power", flourish: 10 },
-                    { name: "Hydroelectric Power", flourish: 9 },
-                    { name: "Geothermal Energy", flourish: 10 },
-                    { name: "Wave and Tidal Energy", flourish: 10 },
-                    { name: "Biomass", flourish: 7 },
-                    { name: "Nuclear Power", flourish: 5 },
-                    { name: "Fossil Fuels (Coal/Oil/Gas)", flourish: 1 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Water",
-                question: "Potable Water",
-                instruction: "Allocate your water collection methods (Total 100%).",
-                options: [
-                    { name: "Surface Water (Rivers/Lakes)", flourish: 7 },
-                    { name: "Reservoirs and Dams", flourish: 6 },
-                    { name: "Rainwater Collection", flourish: 10 },
-                    { name: "Groundwater Aquifers", flourish: 8 },
-                    { name: "Desalination", flourish: 4 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Housing",
-                question: "Housing Construction",
-                instruction: "Choose your shelter materials and style (Total 100%).",
-                options: [
-                    { name: "Cob & Rammed Earth", flourish: 10 },
-                    { name: "Timber Framing", flourish: 9 },
-                    { name: "Dry Stone Houses", flourish: 10 },
-                    { name: "Bricks and Mortar", flourish: 5 },
-                    { name: "Flat-Pack / Prefab Kits", flourish: 7 },
-                    { name: "Shipping Container Homes", flourish: 6 },
-                    { name: "Modular Pods", flourish: 8 },
-                    { name: "Earth-Sheltered (Hobbit) Homes", flourish: 10 },
-                    { name: "Stilt Houses", flourish: 9 },
-                    { name: "A-Frame Cabins", flourish: 8 },
-                    { name: "3D-Printed Homes", flourish: 8 },
-                    { name: "High-rise homes", flourish: 4 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Governance",
-                question: "Community Leadership",
-                instruction: "How is power shared and decisions made? (Total 100%).",
-                options: [
-                    { name: "Everyone Decides (Direct)", flourish: 10 },
-                    { name: "Choosing Reps (Representative)", flourish: 8 },
-                    { name: "One Person in Charge (Autocracy)", flourish: 2 },
-                    { name: "No Leaders (Communalism/Anarchy)", flourish: 10 },
-                    { name: "The Rulebook (Constitutional)", flourish: 7 }
-                ]
-            },
-            {
-                type: "mix",
-                category: "Community",
-                question: "Social & Civic Design",
-                instruction: "Define the layout of your social life (Total 100%).",
-                options: [
-                    { name: "The Inward Circle (Courtyards)", flourish: 9 },
-                    { name: "The Shared Heart (Cohousing)", flourish: 10 },
-                    { name: "The 'Third Space' (Village Hub)", flourish: 10 },
-                    { name: "The Walkable 'Slow' Street", flourish: 9 },
-                    { name: "Nature-First (Biophilic Layout)", flourish: 10 },
-                    { name: "The Mixed-Age (Intergenerational)", flourish: 10 },
-                    { name: "The 'Maker' District", flourish: 9 }
-                ]
-            }
+            { type: "single", category: "Foundation", question: "Physical Formation", options: [
+                { name: "Volcanic Island", flourish: 9 }, { name: "Continental Fragment", flourish: 8 }, { name: "Coral Atoll", flourish: 10 }
+            ]},
+            { type: "single", category: "Climate", question: "Location Zone", options: [
+                { name: "Tropical / Subtropical", flourish: 10 }, { name: "Temperate", flourish: 9 }, { name: "Polar", flourish: 4 }, { name: "Arid", flourish: 5 }
+            ]},
+            { type: "mix", category: "Food", question: "Farming & Provision", options: [
+                { name: "Arable Farming", flourish: 8 }, { name: "Pastoral Farming", flourish: 4 }, { name: "Mariculture", flourish: 7 }, { name: "Vertical & Hydroponic", flourish: 9 }, { name: "Insect Farming", flourish: 10 }
+            ]},
+            { type: "mix", category: "Energy", question: "Power Systems", options: [
+                { name: "Solar Power", flourish: 10 }, { name: "Wind Power", flourish: 10 }, { name: "Hydroelectric Power", flourish: 9 }, { name: "Geothermal Energy", flourish: 10 }, { name: "Wave and Tidal Energy", flourish: 10 }, { name: "Biomass", flourish: 7 }, { name: "Nuclear Power", flourish: 5 }, { name: "Fossil Fuels", flourish: 1 }
+            ]},
+            { type: "mix", category: "Water", question: "Potable Water", options: [
+                { name: "Surface Water", flourish: 7 }, { name: "Reservoirs and Dams", flourish: 6 }, { name: "Rainwater Collection", flourish: 10 }, { name: "Groundwater Aquifers", flourish: 8 }, { name: "Desalination", flourish: 4 }
+            ]},
+            { type: "mix", category: "Housing", question: "Housing Styles", options: [
+                { name: "Cob & Rammed Earth", flourish: 10 }, { name: "Timber Framing", flourish: 9 }, { name: "Dry Stone Houses", flourish: 10 }, { name: "Bricks and Mortar", flourish: 5 }, { name: "Flat-Pack / Prefab Kits", flourish: 7 }, { name: "Shipping Container Homes", flourish: 6 }, { name: "Modular Pods", flourish: 8 }, { name: "Earth-Sheltered Homes", flourish: 10 }, { name: "Stilt Houses", flourish: 9 }, { name: "A-Frame Cabins", flourish: 8 }, { name: "3D-Printed Homes", flourish: 8 }, { name: "High-rise homes", flourish: 4 }
+            ]},
+            { type: "mix", category: "Governance", question: "Decision Making", options: [
+                { name: "Everyone Decides (Direct)", flourish: 10 }, { name: "Choosing Reps (Representative)", flourish: 8 }, { name: "One Person in Charge (Autocracy)", flourish: 2 }, { name: "No Leaders (Communalism)", flourish: 10 }, { name: "The Rulebook (Constitutional)", flourish: 7 }
+            ]},
+            { type: "mix", category: "Community", question: "Social Layout", options: [
+                { name: "Inward Circle (Courtyards)", flourish: 9 }, { name: "Shared Heart (Cohousing)", flourish: 10 }, { name: "The Third Space (Village Hub)", flourish: 10 }, { name: "Walkable 'Slow' Street", flourish: 9 }, { name: "Nature-First (Biophilic)", flourish: 10 }, { name: "Mixed-Age Zone", flourish: 10 }, { name: "Maker District", flourish: 9 }
+            ]}
         ];
 
         let currentStep = 0;
@@ -212,8 +113,8 @@
             const data = projectData[currentStep];
             document.getElementById('category-label').innerText = data.category;
             document.getElementById('question-text').innerText = data.question;
-            document.getElementById('instruction-text').innerText = data.instruction;
             document.getElementById('total-display').innerText = `Step ${currentStep + 1} of 8`;
+            document.getElementById('instruction-text').innerText = data.type === "single" ? "Select your physical foundation." : "Allocate your percentages (Total 100%).";
             
             const container = document.getElementById('options-container');
             container.innerHTML = '';
@@ -222,7 +123,7 @@
             if (data.type === "single") {
                 data.options.forEach((opt) => {
                     const btn = document.createElement('button');
-                    btn.className = "choice-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 bg-white font-semibold transition-all hover:border-emerald-300";
+                    btn.className = "choice-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 bg-white font-semibold hover:border-emerald-300 transition-all";
                     btn.innerText = opt.name;
                     btn.onclick = () => {
                         document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
@@ -236,13 +137,7 @@
                 data.options.forEach((opt, index) => {
                     const item = document.createElement('div');
                     item.className = "space-y-1 p-2";
-                    item.innerHTML = `
-                        <div class="flex justify-between text-xs font-bold">
-                            <span class="text-slate-600 uppercase tracking-tight">${opt.name}</span>
-                            <span id="val-${index}" class="text-emerald-600">0%</span>
-                        </div>
-                        <input type="range" min="0" max="100" value="0" class="slider" id="slider-${index}" oninput="updateAllocation()">
-                    `;
+                    item.innerHTML = `<div class="flex justify-between text-xs font-bold uppercase tracking-tight"><span>${opt.name}</span><span id="val-${index}" class="text-emerald-600">0%</span></div><input type="range" min="0" max="100" value="0" class="slider" id="slider-${index}" oninput="updateAllocation()">`;
                     container.appendChild(item);
                 });
             }
@@ -252,10 +147,7 @@
         function updateAllocation() {
             const sliders = document.querySelectorAll('.slider');
             let total = 0;
-            sliders.forEach((s, i) => {
-                total += parseInt(s.value);
-                document.getElementById(`val-${i}`).innerText = `${s.value}%`;
-            });
+            sliders.forEach((s, i) => { total += parseInt(s.value); document.getElementById(`val-${i}`).innerText = `${s.value}%`; });
             document.getElementById('total-display').innerText = `Total: ${total}%`;
             document.getElementById('total-display').className = total === 100 ? "text-sm font-bold text-emerald-600" : "text-sm font-bold text-rose-500";
             validate();
@@ -264,79 +156,106 @@
         function validate() {
             const data = projectData[currentStep];
             const nextBtn = document.getElementById('next-btn');
-            let isValid = false;
-
-            if (data.type === "single") {
-                isValid = singleChoiceSelection !== null;
-            } else {
-                let total = 0;
-                document.querySelectorAll('.slider').forEach(s => total += parseInt(s.value));
-                isValid = total === 100;
-            }
-
+            let isValid = data.type === "single" ? singleChoiceSelection !== null : Array.from(document.querySelectorAll('.slider')).reduce((a,b) => a + parseInt(b.value), 0) === 100;
             nextBtn.disabled = !isValid;
-            nextBtn.className = `bg-slate-800 text-white px-8 py-3 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600 shadow-lg shadow-emerald-100' : 'opacity-50 cursor-not-allowed'}`;
+            nextBtn.className = `bg-slate-800 text-white px-8 py-3 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600' : 'opacity-50 cursor-not-allowed'}`;
         }
 
         function nextStep() {
             const data = projectData[currentStep];
             let score = 0;
+            let label = "";
 
             if (data.type === "single") {
                 score = singleChoiceSelection.flourish;
+                label = singleChoiceSelection.name;
             } else {
-                const sliders = document.querySelectorAll('.slider');
-                sliders.forEach((s, i) => {
-                    score += (parseInt(s.value) / 100) * data.options[i].flourish;
-                });
+                document.querySelectorAll('.slider').forEach((s, i) => { score += (parseInt(s.value) / 100) * data.options[i].flourish; });
             }
 
-            finalSectionalScores.push({ category: data.category, score: score });
+            finalSectionalScores.push({ category: data.category, score: score, label: label, type: data.type });
             currentStep++;
+            if (currentStep < projectData.length) { showQuestion(); } else { showResults(); }
+        }
 
-            if (currentStep < projectData.length) {
-                showQuestion();
-            } else {
-                showResults();
-            }
+        function getCategoryFeedback(category, score) {
+            const s = Math.round(score * 10);
+            const feedbacks = {
+                "Food": [
+                    { min: 90, text: "🌾 Your food systems are truly regenerative. By prioritizing biodiversity and soil health, you ensure both people and the land are nourished and resilient." },
+                    { min: 70, text: "🥗 You have a solid food system that balances traditional and modern needs, though there's still a slight reliance on more extractive methods." },
+                    { min: 50, text: "🚜 Your food system is functional but leans heavily on intensive methods. Nature is feeling the pressure to provide for the population." },
+                    { min: 0, text: "⚠️ Your current food mix puts high strain on the island. Consider how natural cycles could help replenish the soil as you grow." }
+                ],
+                "Energy": [
+                    { min: 90, text: "☀️ Brilliant! Your 100% renewable mix means the island can breathe. You have removed the shadow of fossil fuels entirely." },
+                    { min: 70, text: "🔋 A strong, sustainable energy mix. You've embraced the power of the sun and wind, with only small gaps left to fill." },
+                    { min: 50, text: "⚙️ You have power, but the cost to the island is visible. The air and water are beginning to reflect your energy choices." },
+                    { min: 0, text: "⚠️ High fossil fuel reliance creates a heavy burden for future generations. How could the island's natural flows power your world instead?" }
+                ],
+                "Water": [
+                    { min: 90, text: "💧 You are working with the flow of the land. Rain harvesting and careful capture mean the island's thirst is met with respect." },
+                    { min: 70, text: "🚰 A dependable water system. You have secured the community's needs, though some methods still require high infrastructure energy." },
+                    { min: 50, text: "🏢 Water is being provided, but at a cost to the island's natural reserves. Watch out for the long-term impact on the water table." },
+                    { min: 0, text: "⚠️ Your water systems are struggling to stay in harmony. Nature is being asked to give more than it can naturally replenish." }
+                ],
+                "Housing": [
+                    { min: 90, text: "🏡 Your homes are made of the land itself. Breathing walls and natural materials create a sanctuary for both humans and local wildlife." },
+                    { min: 70, text: "🔨 Sturdy and thoughtfully designed. You have balanced modern convenience with a respectful use of materials." },
+                    { min: 50, text: "🏗️ Functional shelter, but high in embodied energy. These homes protect the people but don't yet give back to the ecosystem." },
+                    { min: 0, text: "⚠️ Your housing layout risks isolating people from each other and the land. Consider how natural materials could soften the footprint." }
+                ],
+                "Governance": [
+                    { min: 90, text: "🤝 Agency is high! By giving every voice a place in the circle, you have built a community that is resilient and deeply connected." },
+                    { min: 70, text: "🗳️ A fair and stable system. People feel represented, though there are still layers between the community and the decisions." },
+                    { min: 50, text: "📜 Structure is prioritized over agency. While stable, the spark of individual and community creativity may be dampened." },
+                    { min: 0, text: "⚠️ The concentration of power risks silencing the community. Flourishing requires a shared sense of ownership and responsibility." }
+                ],
+                "Community": [
+                    { min: 90, text: "🌟 Your social design is biophilic and connected. Shared hearts and slow streets ensure that no one is left alone and life is shared." },
+                    { min: 70, text: "🏘️ A warm community layout. You have created good spaces for interaction, though there's room to further integrate nature into daily life." },
+                    { min: 50, text: "🚶 Modern and organized, but perhaps lacking a 'heart.' People may live close together but still feel distant from one another." },
+                    { min: 0, text: "⚠️ The social layout feels fragmented. Community flourishes in the 'third spaces'—how could you bring people back together?" }
+                ]
+            };
+            
+            if (!feedbacks[category]) return null;
+            return feedbacks[category].find(f => s >= f.min).text;
         }
 
         function showResults() {
             document.getElementById('screen-question').classList.add('hidden');
             document.getElementById('screen-results').classList.remove('hidden');
 
-            const totalSum = finalSectionalScores.reduce((acc, curr) => acc + curr.score, 0);
-            const finalIndex = Math.round((totalSum / (projectData.length * 10)) * 100);
+            const scoredSections = finalSectionalScores.filter(s => s.type === "mix");
+            const totalSum = scoredSections.reduce((acc, curr) => acc + curr.score, 0);
+            const finalIndex = Math.round((totalSum / (scoredSections.length * 10)) * 100);
 
             document.getElementById('score-display').innerText = finalIndex;
-            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "Regenerative Haven" : (finalIndex > 65 ? "Steady Community" : "Emerging System");
+            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "Regenerative Sanctuary" : (finalIndex > 65 ? "Steady Settlement" : "Emerging System");
 
             const container = document.getElementById('sectional-results');
+            const feedbackContainer = document.getElementById('detailed-feedback-container');
+
             finalSectionalScores.forEach(s => {
                 const item = document.createElement('div');
                 item.className = "bg-slate-50 p-3 rounded-xl border border-slate-100";
-                item.innerHTML = `
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-xl font-bold text-slate-800">${Math.round(s.score * 10)}%</div>
-                        <div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden">
-                            <div class="bg-emerald-500 h-full" style="width: ${s.score * 10}%"></div>
-                        </div>
-                    </div>
-                `;
+                
+                if (s.type === "single") {
+                    item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="text-lg font-bold text-slate-800">${s.label}</div>`;
+                } else {
+                    item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="flex items-center justify-between"><div class="text-xl font-bold text-slate-800">${Math.round(s.score * 10)}%</div><div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${s.score * 10}%"></div></div></div>`;
+                    
+                    const feedback = getCategoryFeedback(s.category, s.score);
+                    if (feedback) {
+                        const fbBox = document.createElement('div');
+                        fbBox.className = "p-4 bg-white border border-slate-100 rounded-xl text-sm leading-relaxed text-slate-600 shadow-sm";
+                        fbBox.innerText = feedback;
+                        feedbackContainer.appendChild(fbBox);
+                    }
+                }
                 container.appendChild(item);
             });
-
-            // Deep Dive Explanations
-            let explanation = "";
-            if (finalIndex > 85) {
-                explanation = "🌱 HIGH FLOURISH: Your island is a masterpiece of circularity. For NATURE, this means high biodiversity, clean oceans, and minimal carbon impact. For PEOPLE, your high scores in Governance and Community mean everyone has a voice and no one is lonely. Your choice of natural building materials (like Cob or Timber) means the island's health actually improves over time.";
-            } else if (finalIndex > 65) {
-                explanation = "⚖️ BALANCED: Your community is stable and functioning well. You have met human needs (Food, Water, Energy), but you've likely used some extractive methods to do it (like high-rise buildings or centralized power). NATURE is holding on, but under pressure. Think about how you could shift your 'Energy' or 'Housing' mix more toward natural materials to give the land more room to breathe.";
-            } else {
-                explanation = "⚠️ EMERGING: The island is currently under strain. A lower score suggests that human systems (like Fossil Fuels or Autocratic Leadership) are taking more than the island can replenish. For NATURE, this looks like rising waste and declining habitats. For PEOPLE, it may mean less agency and connection. How could you iterate your design to focus more on shared hearts and renewable power?";
-            }
-            document.getElementById('explanation-text').innerText = explanation;
         }
     </script>
 </body>
