@@ -13,6 +13,7 @@
         .hidden { display: none; }
         .choice-btn.selected { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
         .option-row { padding-right: 15px; margin-bottom: 24px; }
+        .logic-error { color: #e11d48; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; display: none; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
@@ -26,7 +27,7 @@
         
         <div id="screen-welcome" class="text-center py-6">
             <div class="mb-6 text-7xl">🏝️</div>
-            <h2 class="text-2xl font-semibold mb-4 text-slate-800 uppercase tracking-tight">Describe Your Island</h2>
+            <h2 class="text-2xl font-semibold mb-4 text-slate-800 uppercase tracking-tight">The Architect's Journal</h2>
             <div class="mb-10 max-w-sm mx-auto text-left">
                 <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">What is the name of your island?</label>
                 <input type="text" id="island-name-input" placeholder="e.g. Hope Haven" class="w-full p-4 rounded-xl border-2 border-slate-100 text-lg font-semibold text-slate-700 text-center">
@@ -41,7 +42,11 @@
             </div>
             <h2 id="question-text" class="text-xl font-semibold mb-2 text-slate-800 uppercase tracking-tight leading-tight">Question Text</h2>
             <p id="instruction-text" class="text-sm text-slate-500 mb-8 italic"></p>
+            
             <div id="options-container" class="space-y-8 overflow-y-auto max-h-[50vh] pr-4"></div>
+            
+            <p id="logic-feedback" class="logic-error italic"></p>
+
             <div class="mt-12 pt-6 border-t border-slate-100 flex justify-end">
                 <button id="next-btn" onclick="nextStep()" class="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-md">Next Step</button>
             </div>
@@ -89,14 +94,14 @@
 
     <script>
         const projectData = [
-            { type: "single", category: "Foundation", options: [{ name: "Volcanic Island (Lava rock)", flourish: 9 }, { name: "Continental Fragment (Old land)", flourish: 8 }, { name: "Coral Atoll (Sea life)", flourish: 10 }] },
+            { type: "single", category: "Foundation", options: [{ name: "Volcanic Island (Lava rock)", flourish: 9 }, { name: "Continental Fragment (Old land)", flourish: 8 }, { name: "Coral Atoll (Circular Reef)", flourish: 10 }] },
             { type: "single", category: "Climate", options: [{ name: "Tropical / Subtropical (Hot/Wet)", flourish: 10 }, { name: "Temperate (Mild)", flourish: 9 }, { name: "Polar (Freezing)", flourish: 4 }, { name: "Arid (Very Dry)", flourish: 5 }] },
-            { type: "mix", category: "Food", options: [{ name: "Arable Farming (Growing crops)", flourish: 8 }, { name: "Pastoral Farming (Raising animals)", flourish: 4 }, { name: "Mariculture (Sea-based)", flourish: 7 }, { name: "Vertical & Hydroponic (Tech)", flourish: 9 }, { name: "Insect Farming (Low-waste)", flourish: 10 }] },
+            { type: "mix", category: "Food", options: [{ name: "Arable Farming (Growing crops)", flourish: 8 }, { name: "Pastoral Farming (Raising animals)", flourish: 4 }, { name: "Mariculture (Sea-based)", flourish: 7 }, { name: "Vertical & Hydroponic (Indoor Plant Tech)", flourish: 9 }, { name: "Insect Farming (Indoor Insect Rearing)", flourish: 10 }] },
             { type: "mix", category: "Energy", options: [{ name: "Solar Power", flourish: 10 }, { name: "Wind Power", flourish: 10 }, { name: "Hydroelectric", flourish: 9 }, { name: "Geothermal", flourish: 10 }, { name: "Wave & Tidal", flourish: 10 }, { name: "Biomass", flourish: 7 }, { name: "Nuclear", flourish: 5 }, { name: "Fossil Fuels (Coal/Oil/Gas)", flourish: 1 }] },
             { type: "mix", category: "Drinking Water", options: [{ name: "Surface Water", flourish: 7 }, { name: "Reservoirs & Dams", flourish: 6 }, { name: "Rainwater Collection", flourish: 10 }, { name: "Groundwater (Wells)", flourish: 8 }, { name: "Desalination", flourish: 4 }] },
-            { type: "mix", category: "Homes", options: [{ name: "Cob & Rammed Earth", flourish: 10 }, { name: "Timber Framing", flourish: 9 }, { name: "Dry Stone", flourish: 10 }, { name: "Earth-Sheltered", flourish: 10 }, { name: "Stilt Houses", flourish: 9 }, { name: "A-Frame Cabins", flourish: 8 }, { name: "3D-Printed Homes", flourish: 8 }, { name: "Flat-Pack & Prefab", flourish: 7 }, { name: "Shipping Containers", flourish: 6 }, { name: "Bricks and Mortar", flourish: 5 }, { name: "High-rise homes", flourish: 4 }] },
-            { type: "mix", category: "Decisions", options: [{ name: "Everyone Decides (Direct Voting)", flourish: 10 }, { name: "Choosing Reps (Representative)", flourish: 8 }, { name: "One Person in Charge (Autocracy)", flourish: 2 }, { name: "No Leaders (Communalism)", flourish: 10 }, { name: "The Rulebook (A Constitution)", flourish: 7 }] },
-            { type: "spectrum", category: "Social Life", options: [{ name: "Travel", low: "High-Speed Roads", high: "Walkable 'Slow' Streets" }, { name: "Connection", low: "Private & Separate", high: "Shared Heart (Cohousing)" }, { name: "Public Space", low: "None", high: "Village Hub (Third Space)" }, { name: "Nature", low: "Sterile", high: "Nature-First (Biophilic)" }, { name: "Age Mix", low: "Separate Age Groups", high: "Mixed Ages (Intergenerational)" }, { name: "Creation", low: "Buying", high: "Maker District (Workshops)" }] }
+            { type: "mix", category: "Homes", options: [{ name: "Cob & Rammed Earth (Clay / Mud / Straw)", flourish: 10 }, { name: "Timber Framing", flourish: 9 }, { name: "Dry Stone", flourish: 10 }, { name: "Earth-Sheltered (Hobbit House)", flourish: 10 }, { name: "Stilt Houses", flourish: 9 }, { name: "A-Frame Cabins", flourish: 8 }, { name: "3D-Printed Homes", flourish: 8 }, { name: "Flat-Pack & Prefab", flourish: 7 }, { name: "Shipping Containers", flourish: 6 }, { name: "Bricks and Mortar", flourish: 5 }, { name: "High-rise towers", flourish: 4 }] },
+            { type: "mix", category: "Decisions", options: [{ name: "Everyone Decides (Direct Voting)", flourish: 10 }, { name: "Choosing Reps (Representative)", flourish: 8 }, { name: "One Person in Charge (Autocracy / Dictator)", flourish: 2 }, { name: "No Leaders (Communalism / Anarchy)", flourish: 10 }, { name: "The Rulebook (A Constitution)", flourish: 7 }] },
+            { type: "spectrum", category: "Social Life", options: [{ name: "Travel", low: "High-Speed Roads", high: "Walkable 'Slow' Streets" }, { name: "Connection", low: "Private & Separate", high: "Shared Homes (Cohousing)" }, { name: "Public Space", low: "None", high: "Communal Buildings and Areas (Third Space)" }, { name: "Nature", low: "Built Up", high: "Nature-First (Biophilic)" }, { name: "Age Mix", low: "Separate Age Groups", high: "Mixed Ages (Intergenerational)" }, { name: "Creation", low: "Import and Buy", high: "Maker District (Shared Workshops)" }] }
         ];
 
         const disasterDatabase = [
@@ -105,16 +110,16 @@
             { id: 'Tsunami', name: "The Rising Wave", icon: "🌊", sub: "Tsunami", trigger: "All" },
             { id: 'Storm', name: "The Super-Storm", icon: "🌀", sub: "Cyclone/Hurricane", trigger: "Tropical / Subtropical" },
             { id: 'Drought', name: "The Silent Drought", icon: "☀️", sub: "Water Shortage", trigger: "Arid" },
-            { id: 'SeaLevel', name: "The Salty Soak", icon: "📈", sub: "Rising Sea Levels", trigger: "Coral Atoll" },
+            { id: 'SeaLevel', name: "The Salty Soak", icon: "📈", sub: "Rising Sea Levels", trigger: "Circular Reef" },
             { id: 'Blight', name: "The Blight", icon: "🥀", sub: "Crop Failure", trigger: "All" },
             { id: 'Power', name: "The Dark Outage", icon: "🔇", sub: "Power Failure", trigger: "All" }
         ];
 
         const contextMultipliers = {
-            "Coral Atoll (Sea life)": { "Food": { "Arable Farming (Growing crops)": 0.5, "Mariculture (Sea-based)": 1.4 }, "Drinking Water": { "Desalination": 1.5 }, "Homes": { "Stilt Houses (Raised up)": 1.3 } },
-            "Arid (Very Dry)": { "Drinking Water": { "Rainwater Collection": 0.4, "Desalination": 1.6 }, "Food": { "Vertical & Hydroponic (Tech)": 1.3 } },
-            "Tropical / Subtropical (Hot/Wet)": { "Energy": { "Solar Power": 1.2 }, "Homes": { "Stilt Houses (Raised up)": 1.3, "Earth-Sheltered": 1.2 } },
-            "Polar (Freezing)": { "Energy": { "Solar Power": 0.3, "Wind Power": 1.3 }, "Food": { "Vertical & Hydroponic (Tech)": 1.4 } }
+            "Coral Atoll (Circular Reef)": { "Food": { "Arable Farming (Growing crops)": 0.5, "Mariculture (Sea-based)": 1.4 }, "Drinking Water": { "Desalination": 1.5 }, "Homes": { "Stilt Houses": 1.3 } },
+            "Arid (Very Dry)": { "Drinking Water": { "Rainwater Collection": 0.4, "Desalination": 1.6 }, "Food": { "Vertical & Hydroponic (Indoor Plant Tech)": 1.3 } },
+            "Tropical / Subtropical (Hot/Wet)": { "Energy": { "Solar Power": 1.2 }, "Homes": { "Stilt Houses": 1.3, "Earth-Sheltered (Hobbit House)": 1.2 } },
+            "Polar (Freezing)": { "Energy": { "Solar Power": 0.3, "Wind Power": 1.3 }, "Food": { "Vertical & Hydroponic (Indoor Plant Tech)": 1.4 } }
         };
 
         let currentStep = 0, finalSectionalScores = [], islandContext = {}, singleChoiceSelection = null, islandName = "Terra Nova";
@@ -127,11 +132,19 @@
             document.getElementById('question-text').innerText = data.category;
             document.getElementById('instruction-text').innerText = data.type === "spectrum" ? "How does it feel to live here?" : (data.type === "single" ? "How did the island start?" : "Choose your mix (Total 100%).");
             const container = document.getElementById('options-container'); container.innerHTML = '';
+            
+            document.getElementById('logic-feedback').style.display = 'none';
+
             if (data.type === "single") {
                 document.getElementById('total-display').innerText = "Pick One";
                 data.options.forEach((opt) => {
                     const btn = document.createElement('button'); btn.className = "choice-btn w-full text-left p-5 rounded-2xl border-2 border-slate-100 bg-white font-semibold transition-all hover:border-emerald-300";
-                    btn.innerText = opt.name; btn.onclick = () => { document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); singleChoiceSelection = opt; validate(); };
+                    btn.innerText = opt.name; btn.onclick = () => { 
+                        document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected')); 
+                        btn.classList.add('selected'); 
+                        singleChoiceSelection = opt; 
+                        validate(); 
+                    };
                     container.appendChild(btn);
                 });
             } else if (data.type === "mix") {
@@ -160,8 +173,25 @@
         }
 
         function validate() {
-            const data = projectData[currentStep]; const nextBtn = document.getElementById('next-btn');
+            const data = projectData[currentStep]; 
+            const nextBtn = document.getElementById('next-btn');
+            const feedback = document.getElementById('logic-feedback');
+            
             let isValid = data.type === "single" ? (singleChoiceSelection !== null) : (data.type === "mix" ? Array.from(document.querySelectorAll('.slider')).reduce((a,b) => a + parseInt(b.value), 0) === 100 : true);
+            
+            if (currentStep === 1 && singleChoiceSelection) {
+                const selectedClimate = singleChoiceSelection.name;
+                const pickedFoundation = islandContext["Foundation"] || "";
+                
+                if (pickedFoundation.includes("Circular Reef") && (selectedClimate.includes("Polar") || selectedClimate.includes("Temperate"))) {
+                    isValid = false;
+                    feedback.style.display = 'block';
+                    feedback.innerText = `⚠️ Logic Gate: Coral reefs cannot build islands in ${selectedClimate.split(' ')[0]} waters. Reef-building corals need warm, tropical seas to thrive.`;
+                } else {
+                    feedback.style.display = 'none';
+                }
+            }
+
             nextBtn.disabled = !isValid;
             nextBtn.className = `bg-slate-800 text-white px-10 py-4 rounded-xl font-bold transition-all ${isValid ? 'bg-emerald-600 shadow-md' : 'opacity-50 cursor-not-allowed'}`;
         }
@@ -172,95 +202,11 @@
             let text = "Your choices here set the heartbeat for how everyone lives together.";
             
             if (cat === "Food") {
-                if (formation.includes("Atoll") && data.some(d => d.name.includes("Arable") && d.p > 30)) text = "⚠️ Nature Check: In a Coral Atoll, the soil is very thin and salty. Arable farming is hard here. Your score reflects the struggle of the land.";
+                if (formation.includes("Circular Reef") && data.some(d => d.name.includes("Arable") && d.p > 30)) text = "⚠️ Nature Check: In a Coral Atoll, the soil is very thin and salty. Arable farming is hard here. Your score reflects the struggle of the land.";
                 else if (data.some(d => d.p > 40 && d.name.includes("Insect"))) text = "🍎 Brilliant: Insect Farming is a high-protein system that uses almost no space or water. Pure flourishing!";
                 else text = "🍎 A balanced food mix. You've secured the community's belly while respecting the land's natural limits.";
             }
             if (cat === "Energy") {
                 if (climate.includes("Polar") && data.some(d => d.name.includes("Solar") && d.p > 40)) text = "⚠️ Nature Check: In the Polar zones, the sun disappears for months. Relying on Solar here is difficult.";
                 else if (data.every(d => !d.name.includes("Fossil"))) text = "⚡ Brilliant! 100% clean power. You've harnessed the natural flows of the island to power your future.";
-                else text = "⚡ A steady power mix. You are moving toward the light, but still using a few old sources.";
-            }
-            if (cat === "Drinking Water") {
-                if (climate.includes("Arid") && data.some(d => d.name.includes("Rainwater") && d.p > 40)) text = "⚠️ Nature Check: In this dry climate, it rarely rains. Your people might find the tanks are often empty.";
-                else if (data.some(d => d.p > 50 && d.name.includes("Rainwater"))) text = "💧 Beautifully simple. By trusting the clouds, you've met the island's thirst without using heavy energy.";
-                else text = "💧 A resilient mix. You have secured your water across many sources, ensuring no one goes thirsty.";
-            }
-            if (cat === "Homes") {
-                if (data.some(d => d.p > 50 && (d.name.includes("Cob") || d.name.includes("Stone")))) text = "🏠 Natural Beauty: Your homes are made of the land itself. These breathing walls connect people to the island.";
-                else text = "🏠 Practical shelter. You have prioritised safety and efficiency, making a solid home for all your people.";
-            }
-            if (cat === "Decisions") {
-                if (data.some(d => d.p > 50 && d.name.includes("Everyone"))) text = "⚖️ Shared Power: By sharing the circle, you've built a community where everyone truly feels like they belong.";
-                else text = "⚖️ Stable Leadership: People feel represented and the island's path is safe and structured.";
-            }
-            return text;
-        }
-
-        function nextStep() {
-            const data = projectData[currentStep]; let score = 0, label = "", raw = [];
-            if (data.type === "single") { score = singleChoiceSelection.flourish; label = singleChoiceSelection.name; islandContext[data.category] = label; singleChoiceSelection = null; }
-            else if (data.type === "mix") {
-                document.querySelectorAll('.slider').forEach((s, i) => {
-                    let p = parseInt(s.value); if(p > 0) raw.push({name: data.options[i].name, p: p});
-                    let val = data.options[i].flourish;
-                    [islandContext["Foundation"], islandContext["Climate"]].forEach(ctx => {
-                        if (contextMultipliers[ctx] && contextMultipliers[ctx][data.category] && contextMultipliers[ctx][data.category][data.options[i].name]) { val *= contextMultipliers[ctx][data.category][data.options[i].name]; }
-                    });
-                    score += (p / 100) * val;
-                });
-            } else if (data.type === "spectrum") { let sum = 0; document.querySelectorAll('.slider').forEach(s => sum += parseInt(s.value)); score = sum / data.options.length; }
-            finalSectionalScores.push({ category: data.category, score: Math.min(10, score), label: label, type: data.type, raw: raw });
-            currentStep++; if (currentStep < projectData.length) { showQuestion(); } else { showResults(); }
-        }
-
-        function showResults() {
-            document.getElementById('screen-question').classList.add('hidden'); document.getElementById('screen-results').classList.remove('hidden');
-            document.getElementById('island-profile-title').innerText = `${islandName} Flourishing Profile`;
-            const scored = finalSectionalScores.filter(s => s.type !== "single");
-            const finalIndex = Math.round((scored.reduce((a,c) => a + c.score, 0) / (scored.length * 10)) * 100);
-            document.getElementById('score-display').innerText = finalIndex;
-            document.getElementById('outcome-title').innerText = finalIndex > 85 ? "A Healthy, Healing Home" : (finalIndex > 65 ? "A Solid Community" : "An Island in Need");
-            const container = document.getElementById('sectional-results'); container.innerHTML = '';
-            const fbCont = document.getElementById('detailed-feedback-container'); fbCont.innerHTML = '';
-            const icons = {"Food":"🍎", "Energy":"⚡", "Drinking Water":"💧", "Homes":"🏠", "Decisions":"⚖️", "Social Life":"🌟"};
-
-            finalSectionalScores.forEach(s => {
-                const item = document.createElement('div'); item.className = "bg-slate-50 p-3 rounded-xl border border-slate-100";
-                if (s.type === "single") { item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="text-sm font-bold text-slate-800 leading-tight">${s.label}</div>`; }
-                else { 
-                    const perc = Math.round(s.score * 10);
-                    item.innerHTML = `<div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${s.category}</div><div class="flex items-center justify-between"><div class="text-xl font-bold text-slate-800">${perc}%</div><div class="w-16 h-1 bg-slate-200 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full" style="width: ${perc}%"></div></div></div>`; 
-                    const block = document.createElement('div'); block.className = "p-5 bg-white border border-slate-100 rounded-2xl shadow-sm";
-                    block.innerHTML = `<h4 class="text-xs font-bold text-emerald-700 uppercase tracking-widest mb-2">${icons[s.category] || "🌟"} ${s.category}</h4><p class="text-sm text-slate-600 font-medium leading-relaxed">${getSmartFeedback(s.category, s.score, s.raw)}</p>`;
-                    fbCont.appendChild(block);
-                }
-                container.appendChild(item);
-            });
-        }
-
-        function openDisaster() { document.getElementById('screen-results').classList.add('hidden'); document.getElementById('screen-survival').classList.add('hidden'); document.getElementById('screen-disaster').classList.remove('hidden'); const grid = document.getElementById('disaster-grid'); grid.innerHTML = ''; disasterDatabase.forEach(d => { if (d.trigger === "All" || islandContext["Foundation"].includes(d.trigger) || islandContext["Climate"].includes(d.trigger)) { const btn = document.createElement('button'); btn.className = "p-6 bg-white border-2 border-slate-100 rounded-2xl hover:border-rose-400 transition-all text-center group"; btn.innerHTML = `<span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">${d.icon}</span><span class="font-bold text-slate-800 block text-xs uppercase tracking-tighter">${d.name}</span><span class="text-[10px] text-slate-400 uppercase font-bold tracking-widest">${d.sub}</span>`; btn.onclick = () => testResilience(d.id); grid.appendChild(btn); } }); }
-
-        function backToResults() { document.getElementById('screen-disaster').classList.add('hidden'); document.getElementById('screen-survival').classList.add('hidden'); document.getElementById('screen-results').classList.remove('hidden'); }
-
-        function testResilience(id) {
-            document.getElementById('screen-disaster').classList.add('hidden');
-            document.getElementById('screen-survival').classList.remove('hidden');
-            let survival = 75, fb = "";
-            const getRaw = (cat) => finalSectionalScores.find(s => s.category === cat).raw;
-
-            if(id==='Volcano') { if(getRaw("Homes").some(h => h.name.includes("High-rise") && h.p > 30)) { survival -= 30; fb = "Evacuating high-rise buildings during the eruption was slow and dangerous."; } else { survival += 15; fb = "Your dispersed housing allowed for a quick and safe move away from the lava flows!"; } }
-            if(id==='Quake') { if(getRaw("Homes").some(h => h.name.includes("Bricks") && h.p > 40)) { survival -= 25; fb = "Traditional bricks and mortar cracked under the pressure of the quake."; } else { survival += 20; fb = "Your flexible timber and natural earth homes swayed with the earth, keeping everyone safe."; } }
-            if(id==='Tsunami') { if(getRaw("Food").some(f => f.name.includes("Mariculture") && f.p > 40)) { survival -= 30; fb = "The rising wave destroyed the sea-farms, causing a sudden food shortage."; } else if(getRaw("Homes").some(h => h.name.includes("Stilt") && h.p > 40)) { survival += 20; fb = "The water flowed harmlessly under your stilt houses, saving the community!"; } else { fb = "Your inland systems stayed dry, though the coastline will need time to heal."; } }
-            if(id==='Storm') { if(getRaw("Energy").some(e => e.name.includes("Wind") && e.p > 50)) { survival -= 20; fb = "The extreme winds were too strong for the turbines, leaving the island in the dark."; } else if(getRaw("Homes").some(h => h.name.includes("Earth-Sheltered") && h.p > 40)) { survival += 25; fb = "Built into the land, your homes were a safe sanctuary from the howling winds."; } else { fb = "The storm was fierce, but your community stayed together and weathered the wind."; } }
-            if(id==='Drought') { if(getRaw("Drinking Water").some(w => w.name.includes("Surface") && w.p > 40)) { survival -= 35; fb = "When the rivers ran dry, the island's main water source vanished."; } else if(getRaw("Drinking Water").some(w => w.name.includes("Groundwater") && w.p > 40)) { survival += 20; fb = "Your deep wells kept the water flowing even when the clouds disappeared."; } else { fb = "Your careful water mix helped the community stay hydrated through the heat."; } }
-            if(id==='Blight') { if(getRaw("Food").some(f => f.name.includes("Arable") && f.p > 60)) { survival -= 30; fb = "Because you relied so much on one type of crop, the blight was a disaster for your food stores."; } else { survival += 15; fb = "Because you have a diverse mix of food, the loss of one crop didn't stop the island from eating!"; } }
-            if(id==='Power') { if(getRaw("Food").some(f => f.name.includes("Vertical") && f.p > 50)) { survival -= 40; fb = "Without electricity, your tech-based food systems failed. The island went hungry."; } else { survival += 15; fb = "Your low-tech farming and cob houses don't need a computer to work—you stayed comfortable!"; } }
-            if(id==='SeaLevel') { if(getRaw("Drinking Water").some(w => w.name.includes("Groundwater") && w.p > 40)) { survival -= 30; fb = "Saltwater seeped into your wells, making the island's drinking water unsafe."; } else { survival += 15; fb = "By relying on rainwater, you weren't affected by the salt seeping into the ground."; } }
-            
-            document.getElementById('survival-score').innerText = Math.max(5, Math.min(99, survival)) + "%";
-            document.getElementById('survival-feedback').innerText = `${fb} On the island of ${islandName}, you've learned that true flourishing is about being ready for anything.`;
-        }
-    </script>
-</body>
-</html>
+                else text = "⚡ A steady power mix. You
